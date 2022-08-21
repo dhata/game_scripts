@@ -65,7 +65,6 @@ def print_floor(floor):
 
 
 def main(argv):
-    logger.debug("starting main function")
     import argparse
     import csv
 
@@ -74,8 +73,12 @@ def main(argv):
     parser.add_argument("-gt","--gold-tickets", required=False, nargs = "?", default = 0, type = int, help="Number of Gold Tickets on the tower. Used to calculate how many residential floors are needed.")
     parser.add_argument("-sl","--shared-living", required=False, action='store_true', default=False, help="Flag if the player has unlocked the shared living tech upgrade. Sets the maximum occupancy for a residential floor to 6 bitizens instead of 5.")
     parser.add_argument("-r","--reuse_bits", required=False, action='store_true', default=False, help="Flag if the player will reuse bits for floors 3 up to the number of gold tickets. Allows the player to build less residential floors and more stores.")
-    parser.add_argument("-t","--target_floor",required=False, nargs = "?", default = 50, type = int, help = "What floor the player is building towards next. Defaults to 50 to show first 50 floors of the tower.")
+    parser.add_argument("-t","--target_floor", required=False, nargs = "?", default = 50, type = int, help = "What floor the player is building towards next. Defaults to 50 to show first 50 floors of the tower.")
+    parser.add_argument("-d","--debug", required=False, action='store_true', default=False, help="Add flag to run with debug statements on.")
     args = parser.parse_args()
+
+    if not(args.debug):
+        ch.setLevel(logging.INFO)
     logger.debug(args)
 
     logger.debug("reading in floors.csv")
