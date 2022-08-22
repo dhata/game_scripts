@@ -75,6 +75,7 @@ def main(argv):
     parser.add_argument("-r","--reuse_bits", required=False, action='store_true', default=False, help="Flag if the player will reuse bits for floors 3 up to the number of gold tickets. Allows the player to build less residential floors and more stores.")
     parser.add_argument("-t","--target_floor", required=False, nargs = "?", default = 50, type = int, help = "What floor the player is building towards next. Defaults to 50 to show first 50 floors of the tower.")
     parser.add_argument("-d","--debug", required=False, action='store_true', default=False, help="Add flag to run with debug statements on.")
+    parser.add_argument("-e","--export", required=False, nargs = "?", default=False, help="Use this flag to have the program print out a csv file with the table output. If no file name is passed, it will save a file named YYMMDDDHHMM_TowerList.csv")
     args = parser.parse_args()
 
     if not(args.debug):
@@ -131,7 +132,7 @@ def main(argv):
             current_tower.append(current_floor)
             current_vacancy += max_occupancy
             
-        elif args.reuse_bits and next_store["Rank"]>3 and next_store["Rank"]<args.gold_tickets:
+        elif args.reuse_bits and next_store["Rank"]>3 and next_store["Rank"]<=args.gold_tickets:
             # if reuse_bits is on, then don't decrease vacancy for floors ranked 4 up to the number of gold tickets
             current_floor = next_store.copy()
             current_floor.update({"Floor Number": current_floor_num})
@@ -149,6 +150,14 @@ def main(argv):
 
     # [print_floor(x) for x in sorted(current_tower, key=lambda d: d['Floor Number'], reverse=True)]
     [print_floor(x) for x in current_tower]
+# set().union(*(d.keys() for d in current_tower))
+    # keys = current_tower[0].keys()
+    keys = set().union(*(d.keys() for d in current_tower))
+    if not(args.export):
+        with open('TowerList.csv', 'w', newline='') as output_file:
+            dict_writer = csv.DictWriter(output_file, keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(current_tower)
 
 
 
